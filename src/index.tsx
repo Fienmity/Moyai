@@ -1,7 +1,9 @@
+import { get, set } from 'enmity/api/settings';
 import { Plugin, registerPlugin } from 'enmity/managers/plugins';
 import { getByName, getByProps } from 'enmity/metro';
-import { Messages, React } from 'enmity/metro/common';
+import { React } from 'enmity/metro/common';
 import { create } from 'enmity/patcher';
+import Settings from './components/Settings';
 import Manifest from './manifest.json';
 
 
@@ -19,13 +21,17 @@ const patcher = create('moyai')
 
 function isBoomWorthy(content: string) {
    content = content.toLowerCase()
-   return content.includes("🗿") || content.includes("moyai") || content.includes("maoi") || content.includes("boom") || content.includes("vine") || content.includes("💥")
+   return ["🗿", "moyai", "moai", "boom", "vine", "💥"].some((trigger) => content.includes(trigger))
 }
 
 const Moyai: Plugin = {
    ...Manifest,
 
    onStart() {
+      if (!get(Manifest.name, "volume")) {
+         set(Manifest.name, "volume", "100")
+      }
+
       let attempt = 0
       const attempts = 3
 
@@ -57,33 +63,41 @@ const Moyai: Plugin = {
             );
 
 
-            
+
             // Patch chat header to hold video component(s) for vine boom
             patcher.instead(ChatBanner, "default", (self, args, orig) => {
                const channelId = args[0].channel.id
                const [paused, setPaused] = React.useState(true)
+               let vid;
 
                patcher.after(MessageCreate, "actionHandler", (self, args, orig) => {
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
-                     setPaused(false)
+                     vid.seek(0)
+                     if (paused) setPaused(false)
                   }
                })
 
                patcher.after(MessageUpdate, "actionHandler", (self, args, orig) => {
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
-                     setPaused(false)
+                     vid.seek(0)
+                     if (paused) setPaused(false)
                   }
                })
 
                patcher.after(MessageReactionAdd, "actionHandler", (self, args, orig) => {
                   if (args[0].channelId === channelId && isBoomWorthy(args[0].emoji.name)) {
-                     setPaused(false)
+                     vid.seek(0)
+                     if (paused) setPaused(false)
                   }
                })
 
                return <>
                   {orig.apply(self, args)}
-                  <Video source={{ uri: "https://github.com/FierysDiscordAddons/Moyai/raw/main/src/boom.mp4" }} audioOnly={true} paused={paused} repeat={true} onEnd={() => setPaused(true)} />
+                  <Video ref={(ref) => { vid = ref }}
+                     source={{ uri: "https://github.com/FierysDiscordAddons/Moyai/raw/main/src/boom.mp4" }}
+                     audioOnly={true}
+                     paused={paused}
+                     volume={Number(get(Manifest.name, "volume"))} />
                </>
             })
          } catch {
@@ -98,6 +112,10 @@ const Moyai: Plugin = {
 
    onStop() {
       patcher.unpatchAll()
+   },
+
+   getSettingsPanel({ settings }) {
+      return <Settings settings={settings} />;
    },
 };
 
