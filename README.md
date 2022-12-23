@@ -1,3 +1,3 @@
-# Template
+# 🗿 (Moyai)
 
-Template plugin
+Plays the vine boom sound when a related word/emoji is sent/edited/reacted
