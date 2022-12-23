@@ -73,7 +73,7 @@ const Moyai: Plugin = {
 
                return <>
                   {orig.apply(self, args)}
-                  <Video source={{ uri: "https://github.com/FieryFlames/test/raw/main/boom.mp4" }} audioOnly={true} paused={paused} repeat={true} onEnd={() => setPaused(true)} />
+                  <Video source={{ uri: "https://github.com/FierysDiscordAddons/Moyai/raw/main/src/boom.mp4" }} audioOnly={true} paused={paused} repeat={true} onEnd={() => setPaused(true)} />
                </>
             })
          } catch {
