@@ -76,7 +76,6 @@ const Moyai: Plugin = {
                })
 
                patcher.after(MessageReactionAdd, "actionHandler", (self, args, orig) => {
-                  console.log(args)
                   if (args[0].channelId === channelId && isBoomWorthy(args[0].emoji.name)) {
                      setPaused(false)
                   }
