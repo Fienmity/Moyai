@@ -19,7 +19,7 @@ const patcher = create('moyai')
 
 function isBoomWorthy(content: string) {
    content = content.toLowerCase()
-   return content.includes("🗿") || content.includes("moyai") || content.includes("maoi") || content.includes("vine boom")
+   return content.includes("🗿") || content.includes("moyai") || content.includes("maoi") || content.includes("boom") || content.includes("vine") || content.includes("💥")
 }
 const Moyai: Plugin = {
    ...Manifest,
