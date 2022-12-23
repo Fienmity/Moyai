@@ -52,17 +52,21 @@ const Moyai: Plugin = {
             );
 
             
+            // Patch chat header to hold video component(s) for vine boom
             patcher.instead(ChatBanner, "default", (self, args, orig) => {
+               const channelId = args[0].channel.id
                const [paused, setPaused] = React.useState(true)
 
                patcher.after(MessageCreate, "actionHandler", (self, args, orig) => {
-                  if (args[0].message.content && isBoomWorthy(args[0].message.content)) {
+                  console.log(args)
+                  if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
                      setPaused(false)
                   }
                })
 
                patcher.after(MessageUpdate, "actionHandler", (self, args, orig) => {
-                  if (args[0].message.content && isBoomWorthy(args[0].message.content)) {
+                  console.log(args)
+                  if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
                      setPaused(false)
                   }
                })
