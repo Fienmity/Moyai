@@ -21,6 +21,7 @@ function isBoomWorthy(content: string) {
    content = content.toLowerCase()
    return content.includes("🗿") || content.includes("moyai") || content.includes("maoi") || content.includes("boom") || content.includes("vine") || content.includes("💥")
 }
+
 const Moyai: Plugin = {
    ...Manifest,
 
@@ -32,7 +33,7 @@ const Moyai: Plugin = {
          try {
             attempt++
 
-            for (const handler of ["MESSAGE_CREATE", "MESSAGE_UPDATE"]) {
+            for (const handler of ["MESSAGE_CREATE", "MESSAGE_UPDATE", "MESSAGE_REACTION_ADD"]) {
                try {
                   FluxDispatcher.dispatch({
                      type: handler,
@@ -51,6 +52,11 @@ const Moyai: Plugin = {
                (h: any) => h.name === "MessageStore"
             );
 
+            const MessageReactionAdd = FluxDispatcher._actionHandlers._orderedActionHandlers?.MESSAGE_REACTION_ADD.find(
+               (h: any) => h.name === "MessageStore"
+            );
+
+
             
             // Patch chat header to hold video component(s) for vine boom
             patcher.instead(ChatBanner, "default", (self, args, orig) => {
@@ -58,15 +64,20 @@ const Moyai: Plugin = {
                const [paused, setPaused] = React.useState(true)
 
                patcher.after(MessageCreate, "actionHandler", (self, args, orig) => {
-                  console.log(args)
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
                      setPaused(false)
                   }
                })
 
                patcher.after(MessageUpdate, "actionHandler", (self, args, orig) => {
-                  console.log(args)
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
+                     setPaused(false)
+                  }
+               })
+
+               patcher.after(MessageReactionAdd, "actionHandler", (self, args, orig) => {
+                  console.log(args)
+                  if (args[0].channelId === channelId && isBoomWorthy(args[0].emoji.name)) {
                      setPaused(false)
                   }
                })
