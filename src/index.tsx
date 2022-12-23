@@ -29,7 +29,7 @@ const Moyai: Plugin = {
 
    onStart() {
       if (!get(Manifest.name, "volume")) {
-         set(Manifest.name, "volume", "100")
+         set(Manifest.name, "volume", "1")
       }
 
       let attempt = 0
