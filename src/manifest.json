@@ -8,5 +8,11 @@
          "id": "890228870559698955"
       }
    ],
+   "updater": {
+      "plugin": "https://github.com/FierysDiscordAddons/Moyai/releases/latest/download/Moyai.js",
+      "manifest": "https://github.com/FierysDiscordAddons/Moyai/releases/latest/download/manifest.json",
+      "changelog": "Add Updater support",
+      "source": "https://github.com/FierysDiscordAddons/Moyai"
+   },
    "color": "#8c8c8c"
 }

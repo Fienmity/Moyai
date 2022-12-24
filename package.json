@@ -19,6 +19,7 @@
       "eslint": "^8.5.0",
       "react-devtools": "^4.27.1",
       "rollup": "^2.62.0",
+      "rollup-plugin-copy": "^3.4.0",
       "rollup-plugin-esbuild": "^4.8.2"
    },
    "optionalDependencies": {
