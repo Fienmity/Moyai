@@ -5,7 +5,7 @@ import { React } from 'enmity/metro/common';
 import { create } from 'enmity/patcher';
 import Settings from './components/Settings';
 import Manifest from './manifest.json';
-
+import { Storage } from 'enmity/metro/common';
 
 const FluxDispatcher = getByProps(
    "_currentDispatchActionType",
@@ -74,6 +74,7 @@ const Moyai: Plugin = {
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
                      vid.seek(0)
                      if (paused) setPaused(false)
+                     set(Manifest.name, 'moyaiCounter', Number(get(Manifest.name, 'moyaiCounter', 0))+1)
                   }
                })
 
@@ -81,6 +82,7 @@ const Moyai: Plugin = {
                   if (args[0].channelId === channelId && args[0].message.content && isBoomWorthy(args[0].message.content)) {
                      vid.seek(0)
                      if (paused) setPaused(false)
+                     set(Manifest.name, 'moyaiCounter', Number(get(Manifest.name, 'moyaiCounter', 0))+1)
                   }
                })
 
@@ -88,6 +90,7 @@ const Moyai: Plugin = {
                   if (args[0].channelId === channelId && isBoomWorthy(args[0].emoji.name)) {
                      vid.seek(0)
                      if (paused) setPaused(false)
+                     set(Manifest.name, 'moyaiCounter', Number(get(Manifest.name, 'moyaiCounter', 0))+1)
                   }
                })
 

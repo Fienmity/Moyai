@@ -1,7 +1,10 @@
 import { SettingsStore } from "enmity/api/settings";
-import { Button, FormInput, FormRow, FormSection, ScrollView, TouchableOpacity } from "enmity/components";
+import { Text, FormInput, FormRow, FormSection, ScrollView, TouchableOpacity } from "enmity/components";
 import { getByProps } from "enmity/metro";
 import { React } from "enmity/metro/common";
+import { get } from "enmity/api/settings";
+import { StyleSheet, Constants } from "enmity/metro/common";
+import Manifest from '../manifest.json'
 
 const Video = getByProps("DRMType", "FilterType").default
 
@@ -11,12 +14,16 @@ interface SettingsProps {
 
 export default function Settings({ settings }: SettingsProps) {
 	const [paused, setPaused] = React.useState(true)
-	React.useEffect(() =>
+	const styles = StyleSheet.createThemedStyleSheet({
+		item: {
+			color: Constants.ThemeColorMap.HEADER_PRIMARY
+		}
+	})
+	React.useEffect(() => {
 		() => {
-			if (!settings.get("volume")) {
-				settings.set("volume", "1")
-			}
-		}, [])
+			settings.get("volume") ?? settings.set("volume", "1");
+		}
+	}, []);
 
 	return <ScrollView>
 		<FormSection title="🗿">
@@ -30,12 +37,22 @@ export default function Settings({ settings }: SettingsProps) {
 				<FormRow label="Test volume" />
 			</TouchableOpacity>
 		</FormSection>
+		<FormSection title="🗿">
+			<FormRow 
+				label='Moyai Counter' 
+				subLabel="This is probably innacurate (aka 🗿🗿🗿🗿)"
+				trailing={() => <Text style={styles.item}>
+					{Number(get(Manifest.name, 'moyaiCounter', 0))
+				}</Text>} 
+			/>
+		</FormSection>
 		<Video
 			source={{ uri: "https://github.com/FierysDiscordAddons/Moyai/raw/main/src/boom.mp4" }}
 			audioOnly={true}
 			paused={paused}
 			repeat={true}
 			onEnd={() => setPaused(true)}
-			volume={Number(settings.get("volume"))} />
+			volume={Number(settings.get("volume"))} 
+		/>
 	</ScrollView>;
 }
